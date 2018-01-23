@@ -47,31 +47,9 @@ if ( options.verbose ) {
     app.use(logger(':method :shortURL - Remote addr :  :remote-addr - :date[clf] - Status : :status - :response-time ms - :res[content-length] bytes'));
 }
 
-// parse application/x-www-form-urlencoded
-app.use( bodyParser.urlencoded( { extended: false } ));
-// parse application/json
-app.use(bodyParser.json());
-// parse multipart
-app.use(busboy());
-
-// add some security headers
-app.use(helmet.xssFilter());
-app.use(helmet.noCache());
-app.use(helmet.noSniff());
-app.use(helmet.hsts({
-    maxAge: 15552000
-}));
-// disable powered by header
-app.disable('x-powered-by');
 
 // Inversion of control, mount express routers by passing app to small modules
 algo(app, loggerFile);
-
-// middleware which catch 404
-app.use(common.middlewares.catch404(loggerFile));
-
-// middleware which catch 500
-app.use(common.middlewares.catch500());
 
 // Start the service
 var server = http.createServer(app).listen(common.LOCAL_PORT, function () {
